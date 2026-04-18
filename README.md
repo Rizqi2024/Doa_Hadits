@@ -60,7 +60,21 @@ Berikut sekilas pandang dari detail keindahan antarmuka **Aplikasi Hadist & Doa*
    ```bash
    npx expo start
    ```
-6. Unduh aplikasi **Expo Go** pada ponsel bersistem operasi _iOS_ atau _Android_ Anda, lalu pindai _QR Code_ yang muncul di layar terminal. (*Catatan Login:* Silakan gunakan ID `rizqi`  & kata sandi `rizqi123` khusus tamu / penguji masuk).
+6. Unduh aplikasi **Expo Go** pada ponsel bersistem operasi _iOS_ atau _Android_ Anda, lalu pindai _QR Code_ yang muncul di layar terminal.
+
+---
+
+## 🔐 Akun Login (Default Credentials)
+
+Untuk masuk ke dalam aplikasi, Anda dapat menggunakan salah satu dari akun berikut:
+
+- **Pengguna / Tamu**
+  - Username: `rizqi`
+  - Password: `rizqi123`
+
+- **Administrator**
+  - Username: `admin`
+  - Password: `admin123`
 
 ---
 ## 🛠 Teknologi Pendukung
