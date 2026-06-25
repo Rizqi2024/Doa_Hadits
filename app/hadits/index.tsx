@@ -1,72 +1,257 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useAppTheme } from '@/context/ThemeContext';
+import { HADITS_DATA, HaditsItem } from '@/constants/database';
 
-const MENU_HADITS = [
-  { id: '1', title: 'Hadits Niat', route: '/hadits/niat', icon: 'heart' },
-  { id: '2', title: 'Hadits Menuntut Ilmu', route: '/hadits/menuntutIlmu', icon: 'school' },
-  { id: '3', title: 'Hadits Kebersihan', route: '/hadits/kebersihan', icon: 'water' },
-  { id: '4', title: 'Hadits Kasih Sayang', route: '/hadits/kasihSayang', icon: 'people' },
+const CATEGORIES = [
+  { id: 'all', title: 'Semua', icon: 'grid-outline' },
+  { id: 'arbain', title: 'Arba\'in Nawawi', icon: 'book-outline' },
+  { id: 'pilihan', title: 'Hadits Pilihan', icon: 'ribbon-outline' }
 ];
 
 export default function HaditsListScreen() {
+  const { theme, colors } = useAppTheme();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  const filteredHadits = HADITS_DATA.filter((item) => {
+    const matchesSearch = 
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.latin.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.translation.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.reference.toLowerCase().includes(searchQuery.toLowerCase());
+      
+    const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
+    
+    return matchesSearch && matchesCategory;
+  });
+
+  const renderItem = ({ item }: { item: HaditsItem }) => {
+    return (
+      <TouchableOpacity 
+        style={[styles.card, { backgroundColor: colors.cardBackground, borderColor: colors.cardBorder }]} 
+        onPress={() => router.push(`/hadits/${item.id}` as any)}
+        activeOpacity={0.7}
+      >
+        <View style={styles.cardLeft}>
+          <View style={[styles.iconContainer, { backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.02)' : '#f0fdf4' }]}>
+             <Ionicons name={item.icon as any} size={22} color={colors.accent} />
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={[styles.cardTitle, { color: colors.text }]} numberOfLines={1}>{item.title}</Text>
+            <Text style={[styles.cardReference, { color: colors.accent }]} numberOfLines={1}>
+              {item.reference}
+            </Text>
+          </View>
+        </View>
+        <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Stack.Screen options={{ title: 'Kumpulan Hadits', headerBackTitle: 'Kembali', headerStyle: { backgroundColor: '#059669' }, headerTintColor: '#fff' }} />
-      <View style={styles.listContainer}>
-        {MENU_HADITS.map((item) => (
-          <TouchableOpacity 
-            key={item.id} 
-            style={styles.card} 
-            onPress={() => router.push(item.route as any)}
-            activeOpacity={0.7}
-          >
-            <View style={styles.cardLeft}>
-              <View style={styles.iconContainer}>
-                 <Ionicons name={item.icon as any} size={24} color="#059669" />
-              </View>
-              <Text style={styles.cardTitle}>{item.title}</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={24} color="#cbd5e1" />
-          </TouchableOpacity>
-        ))}
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <Stack.Screen 
+        options={{ 
+          title: 'Kumpulan Hadits', 
+          headerShown: true,
+          headerBackTitle: 'Kembali', 
+          headerStyle: { backgroundColor: colors.accent }, 
+          headerTintColor: '#fff' 
+        }} 
+      />
+      
+      {/* Search Bar */}
+      <View style={styles.searchSection}>
+        <View style={[styles.searchContainer, { backgroundColor: colors.cardBackground, borderColor: colors.cardBorder }]}>
+          <Ionicons name="search-outline" size={20} color={colors.textMuted} style={styles.searchIcon} />
+          <TextInput
+            style={[styles.searchInput, { color: colors.text }]}
+            placeholder="Cari hadits..."
+            placeholderTextColor={theme === 'dark' ? '#475569' : '#9ca3af'}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          {searchQuery !== '' && (
+            <TouchableOpacity onPress={() => setSearchQuery('')}>
+              <Ionicons name="close-circle" size={18} color={colors.textMuted} />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
+
+      {/* Category Horizontal Filter */}
+      <View style={styles.filterSection}>
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={CATEGORIES}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.categoryList}
+          renderItem={({ item }) => {
+            const isActive = selectedCategory === item.id;
+            return (
+              <TouchableOpacity
+                style={[
+                  styles.categoryChip,
+                  { backgroundColor: colors.cardBackground, borderColor: colors.cardBorder },
+                  isActive && [styles.categoryChipActive, { backgroundColor: colors.accent }]
+                ]}
+                onPress={() => setSelectedCategory(item.id)}
+                activeOpacity={0.7}
+              >
+                <Ionicons 
+                  name={item.icon as any} 
+                  size={16} 
+                  color={isActive ? '#ffffff' : colors.accent} 
+                  style={styles.chipIcon}
+                />
+                <Text style={[styles.categoryText, { color: isActive ? '#ffffff' : colors.text }]}>
+                  {item.title}
+                </Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </View>
+
+      {/* Hadits List */}
+      <FlatList
+        data={filteredHadits}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        contentContainerStyle={styles.listContainer}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Ionicons name="alert-circle-outline" size={48} color={colors.textMuted} />
+            <Text style={[styles.emptyText, { color: colors.textMuted }]}>Hadits tidak ditemukan</Text>
+          </View>
+        }
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f0fdf4' },
-  listContainer: { padding: 20 },
+  container: { 
+    flex: 1, 
+  },
+  searchSection: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 8,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    height: 48,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.02,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 15,
+  },
+  filterSection: {
+    paddingBottom: 8,
+  },
+  categoryList: {
+    paddingHorizontal: 20,
+    paddingVertical: 6,
+    gap: 8,
+  },
+  categoryChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.02,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  categoryChipActive: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  chipIcon: {
+    marginRight: 6,
+  },
+  categoryText: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  listContainer: { 
+    padding: 20,
+    paddingTop: 8,
+    paddingBottom: 40,
+  },
   card: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
     padding: 16,
-    marginBottom: 16,
+    marginBottom: 14,
     borderRadius: 16,
-    shadowColor: '#166534',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    borderWidth: 1,
     borderLeftWidth: 4,
-    borderLeftColor: '#16a34a', // Hijau u/ Hadits
+    borderLeftColor: '#16a34a', // Green accent for Hadits
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
   cardLeft: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#f0fdf4',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: 14,
   },
-  cardTitle: { fontSize: 17, fontWeight: '700', color: '#0f172a' },
+  textContainer: {
+    flex: 1,
+  },
+  cardTitle: { 
+    fontSize: 16, 
+    fontWeight: '700', 
+  },
+  cardReference: {
+    fontSize: 12,
+    marginTop: 4,
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 80,
+  },
+  emptyText: {
+    fontSize: 15,
+    marginTop: 8,
+  },
 });
+

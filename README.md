@@ -1,87 +1,114 @@
-# 📖 Aplikasi Hadist & Doa
+# 📖 Aplikasi Hadits & Doa (UAS Edition)
 
-Aplikasi **Hadist & Doa** adalah aplikasi mobile interaktif bernuansa Islami yang dibangun menggunakan **React Native** dan **Expo Router**. Aplikasi ini diciptakan khusus sebagai project pemenuhan tugas Ujian Tengah Semester (UTS) dengan mengedepankan fungsionalitas dan User Interface (UI) yang memanjakan mata melalui balutan *Emerald Green Theme*.
+Aplikasi **Hadits & Doa** adalah aplikasi mobile interaktif bernuansa Islami yang dibangun menggunakan **React Native**, **TypeScript**, dan **Expo**. Aplikasi ini telah dikembangkan secara signifikan dari versi UTS menjadi versi **UAS** dengan menambahkan berbagai fitur baru yang dinamis, optimasi kode, serta perluasan basis data yang kaya.
 
-Melalui aplikasi ini, pengguna dapat membaca serta meresapi makna dari kumpulan doa harian dan hadits pilihan, lengkap dengan teks Arab, tulisan Latin beraksen, serta terjemahannya dalam Bahasa Indonesia.
-
-## ✨ Fitur Utama
-
-- **Sistem Autentikasi**: Halaman Login sederhana bergaya *premium modern* dengan validasi statis.
-- **Desain Estetik**: Antarmuka dengan overlay Hijau Gelap (*Emerald Dark Theme*) dipadukan efek transparan (*Glassmorphism*) dan navigasi menu *card* yang sangat rapi.
-- **Kumpulan Doa Harian**: Doa sebelum & bangun tidur, serta doa sebelum & sesudah makan.
-- **Kumpulan Hadits Pilihan**: Hadits mendasar tentang Niat, Menuntut Ilmu, Kebersihan, dan Kasih Sayang.
-- **Transisi Super Mulus**: Animasi *progress bar* saat awal mula aplikasi di buka dan navigasi sehalus sutra (*silky smooth*) berkat dukungan performa teknologi *Expo Router*.
+Aplikasi ini mengusung visual *Emerald Green Theme* dengan perpaduan efek transparan *Glassmorphism* dan mode gelap premium (*Emerald Dark Theme*) untuk kenyamanan membaca di berbagai kondisi cahaya.
 
 ---
 
-## 📸 Tangkapan Layar Aplikasi (Screenshots)
+## ✨ Fitur Baru & Unggulan (UAS Edition)
 
-Berikut sekilas pandang dari detail keindahan antarmuka **Aplikasi Hadist & Doa**:
+1. **Perluasan Data Dinamis (Prioritas Utama)**:
+   - Tidak lagi menggunakan halaman statis per doa/hadits. Data dipusatkan di `constants/database.ts` dengan total **40+ entri dinamis**.
+   - **Kumpulan Doa (20+ entri)**: Doa Harian, Doa Shalat, Doa Bepergian, dan Doa Perlindungan.
+   - **Kumpulan Hadits (20+ entri)**: Memuat 15+ Hadits dari kitab **Arba'in Nawawi** dan Hadits Pilihan (Niat, Ilmu, Kebersihan, Senyum, Kasih Sayang).
+   - Fitur **Pencarian (Search Bar)** instan berdasarkan judul, lafal Arab, latin, atau terjemahan.
+   - Fitur **Filter Kategori** menggunakan chip filter horizontal yang interaktif.
 
-### 1. Pembukaan & Autentikasi (Splash Screen & Login)
-| Splash Screen | Halaman Login |
-|:---:|:---:|
-| <img src="gambar/splash%20screen.jpg" width="350"> | <img src="gambar/login.jpg" width="350"> |
+2. **Autentikasi Dinamis (Registrasi & Login)**:
+   - Upgrade dari validasi statis menjadi sistem autentikasi dinamis dengan **Daftar Akun (Signup)** dan **Masuk Akun (Login)**.
+   - Data akun disimpan secara lokal menggunakan **AsyncStorage** yang bertindak sebagai database lokal sehingga aman dan andal dijalankan secara offline saat proses penilaian.
+   - Fitur **Persistensi Sesi**: Sesi masuk pengguna akan diingat, sehingga pengguna tidak perlu login ulang setiap kali membuka aplikasi.
 
-### 2. Dasbor Keikutsertaan & Profil (Home & Tentang)
-| Menu Utama (Beranda) | Informasi Pembuat |
-|:---:|:---:|
-| <img src="gambar/menu%20utama.jpg" width="350"> | <img src="gambar/tentang.jpg" width="350"> |
+3. **Sistem Favorit / Bookmark**:
+   - Tab khusus **Favorit** (`app/(tabs)/favorites.tsx`) dengan Segmented Control ("Doa" / "Hadits") untuk melihat daftar bacaan yang disimpan.
+   - Tombol bookmark pada halaman detail doa/hadits yang otomatis tersimpan permanen di penyimpanan lokal.
 
-### 3. Daftar Utama Bacaan (Kumpulan List Menu)
-| Navigasi Doa | Navigasi Hadits |
-|:---:|:---:|
-| <img src="gambar/menu%20doa.jpg" width="350"> | <img src="gambar/menu%20hadits.jpg" width="350"> |
+4. **Kustomisasi Tampilan & Aksesibilitas**:
+   - **Dark/Light Mode Toggle**: Pilihan tema gelap premium (*Emerald Dark Theme*) dengan palet warna obsidian beraksen hijau mint yang indah di mata.
+   - **Pengaturan Ukuran Font**: Tombol pengubah ukuran font Arab, latin, dan terjemahan langsung di halaman detail (A- / A+) atau melalui menu pengaturan, sangat ramah untuk pengguna lanjut usia.
 
-### 4. Mode Kedamaian Membaca (Detail Doa & Hadits)
-*Halaman detail disajikan dengan latar gambar dan mode overlay hijau tua minimalis untuk menambah kekhusyukan pengguna saat membacanya.*
-| Contoh Teks Doa Harian | Contoh Teks Hadits Pilihan |
-|:---:|:---:|
-| <img src="gambar/contoh%20doa.jpg" width="350"> | <img src="gambar/contoh%20hadits.jpg" width="350"> |
+5. **Audio Recitation (TTS Bahasa Arab)**:
+   - Pemutar audio dinamis menggunakan **expo-speech** (Text-to-Speech) beraksen Arab asli.
+   - Panel pemutar audio glassmorphism premium dengan status visual progres pemutaran yang disimulasikan secara real-time.
+
+6. **Fitur Berbagi (Share)**:
+   - Tombol berbagi instan yang secara otomatis memformat teks doa/hadits (Judul, Arab, Latin, Arti, & Referensi) dalam format estetik untuk dibagikan ke WhatsApp, Telegram, atau media sosial.
+
+7. **Notifikasi Harian (Daily Reminder)**:
+   - Pengaturan notifikasi pengingat harian pada menu pengaturan yang dijadwalkan secara otomatis menggunakan **expo-notifications** pada jam yang telah ditentukan (misalnya pukul 06:00 pagi).
 
 ---
 
-## 🚀 Cara Menjalankan Secara Lokal
+## 🛠️ Struktur Proyek Utama
 
-1. Pastikan Anda telah terkomputerisasi dengan alat  **Node.js** dan **npm / yarn**.
-2. _Clone repository_ ini ke PC/Laptop:
+Peta struktur direktori baru dengan model dynamic routing:
+```
+├── app
+│   ├── (tabs)
+│   │   ├── _layout.tsx      # Navigasi Tab Bawah (Beranda, Favorit, Pengaturan)
+│   │   ├── index.tsx         # Halaman Beranda (dilengkapi Doa Hari Ini)
+│   │   ├── favorites.tsx     # Layar Menampilkan Doa/Hadits Favorit
+│   │   └── settings.tsx      # Pengaturan Tema, Font, Reminder, Logout
+│   ├── doa
+│   │   ├── [id].tsx          # Detail Doa Dinamis (Audio, Font, Share, Fav)
+│   │   └── index.tsx         # Daftar Doa Dinamis + Search & Filter Kategori
+│   ├── hadits
+│   │   ├── [id].tsx          # Detail Hadits Dinamis (Audio, Font, Share, Fav)
+│   │   └── index.tsx         # Daftar Hadits Dinamis + Search & Filter Kategori
+│   ├── _layout.tsx           # Entry point navigasi dibungkus context global
+│   ├── index.tsx             # Animated Splash Screen
+│   ├── login.tsx             # Halaman Masuk Akun
+│   ├── register.tsx          # Halaman Pendaftaran Akun Baru [Baru]
+│   └── tentang.tsx           # Informasi Pembuat (Tema Adaptif)
+├── constants
+│   ├── database.ts           # Basis Data 40+ Doa & Hadits [Baru]
+│   └── theme.ts              # Palet warna adaptif & Fonts
+├── context                   # State Management Global [Baru]
+│   ├── AuthContext.tsx       # State Autentikasi Registrasi/Login
+│   ├── ThemeContext.tsx      # State Kustomisasi Tema Dark/Light
+│   ├── FavoritesContext.tsx  # State Penyimpanan Favorit
+│   └── SettingsContext.tsx   # State Ukuran Font & Reminder
+```
+
+---
+
+## 🚀 Cara Menjalankan Aplikasi Secara Lokal
+
+1. Pastikan Anda telah menginstal **Node.js** (rekomendasi LTS) dan **npm** di komputer Anda.
+2. Clone repository ini:
    ```bash
    git clone https://github.com/Rizqi2024/Doa_Hadits.git
-   ```
-3. Masuk ke direktori projek baru Anda:
-   ```bash
    cd Doa_Hadits
    ```
-4. Pasang library/dependencies terkait:
+3. Instal dependencies yang diperlukan:
    ```bash
    npm install
    ```
-5. Siapkan server pembantu Expo:
+4. Jalankan Expo development server:
    ```bash
    npx expo start
    ```
-6. Unduh aplikasi **Expo Go** pada ponsel bersistem operasi _iOS_ atau _Android_ Anda, lalu pindai _QR Code_ yang muncul di layar terminal.
+5. Untuk menguji aplikasi:
+   - **Android/iOS**: Unduh aplikasi **Expo Go** di App Store / Play Store dan pindai QR Code yang tampil di terminal.
+   - **Web**: Tekan tombol `w` di terminal untuk membuka versi web.
 
 ---
 
-## 🔐 Akun Login (Default Credentials)
+## 🔐 Kredensial Pengujian (Credentials)
 
-Untuk masuk ke dalam aplikasi, Anda dapat menggunakan salah satu dari akun berikut:
+Anda bisa melakukan pendaftaran akun baru langsung di dalam aplikasi melalui tombol **"Daftar Akun"**, atau menggunakan akun default bawaan sistem berikut:
 
-- **Pengguna / Tamu**
+- **Akun Utama**
   - Username: `rizqi`
   - Password: `rizqi123`
-
-- **Administrator**
+- **Akun Admin**
   - Username: `admin`
   - Password: `admin123`
 
 ---
-## 🛠 Teknologi Pendukung
-- **React Native** - _Framework_ dasar pembangunan aplikasi mobile
-- **Expo SDK** - Mempermudah kompilasi dan _hot-reloading_ komponen  
-- **Expo Router** - Pengaturan aliran *Route* layaknya navigasi modern Next.js
-- **Ionicons (@expo/vector-icons)** - Desain standar sistem Ikon Premium 
 
----
+## 💻 Kualitas Kode & Tipe Data
+Proyek ini dibangun menggunakan **TypeScript (94.1%)** dengan pendefinisian type dan interface yang ketat pada database dan context, menjamin kode bersih (*clean code*), dapat dipelihara (*maintainable*), dan bebas dari error runtime.
+
 💡 **Dikembangkan oleh:** Rizqi Nurfadilah (202407002) - *Junior Developer App*
